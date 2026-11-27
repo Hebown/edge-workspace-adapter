@@ -143,3 +143,21 @@ python adapter\cli.py restore --backup "<备份目录>"
 - 【事实】写入要求 Edge 完全退出；`--force` 仅供副本实验。
 - 【推断】服务器可能恢复 emoji；持久化策略见 `agent.md` 第 2 节。
 - 【事实】未知布局会拒绝写入；兼容性维护策略见 `agent.md` 第 3 节。
+
+---
+
+## 上传到一个新的远程仓库
+
+本地仓库已初始化为 `main` 分支，按模块拆分为多次提交，工作树干净、无真实 Profile 数据。
+
+1. 在 GitHub（或你的托管平台）新建一个**空仓库**，建议先设为 private，例如 `edge-workspace-adapter`。
+2. 添加远端并推送：
+
+```powershell
+git remote add origin https://github.com/<你的账号>/edge-workspace-adapter.git
+git push -u origin main
+```
+
+如果本机没有可用的 GitHub 凭据：安装 GitHub CLI 后执行 `gh auth login`，再用
+`gh repo create edge-workspace-adapter --private --source=. --remote=origin --push`；
+或者直接在网页创建空仓库后走上面的 HTTPS 推送。
