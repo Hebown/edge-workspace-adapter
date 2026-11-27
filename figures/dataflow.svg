@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1060" height="560" viewBox="0 0 1060 560">
+  <defs>
+    <marker id="a" markerWidth="10" markerHeight="8" refX="9" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 z" fill="#5f8fd0"/>
+    </marker>
+    <style>
+      .box { fill:#20242c; stroke:#5f8fd0; stroke-width:2; rx:10; }
+      .soft { fill:#1a1d23; stroke:#4a5260; stroke-width:1.5; rx:8; }
+      .t { fill:#e8ebf0; font:16px 'Microsoft YaHei',sans-serif; }
+      .m { fill:#a9b2c0; font:13px 'Microsoft YaHei',sans-serif; }
+      .c { fill:#7fb4ff; font:13px Consolas,monospace; }
+      .h { fill:#ffffff; font:bold 20px 'Microsoft YaHei',sans-serif; }
+      .n { fill:#ffd479; font:bold 14px 'Microsoft YaHei',sans-serif; }
+      .arrow { stroke:#5f8fd0; stroke-width:2; fill:none; marker-end:url(#a); }
+    </style>
+  </defs>
+  <rect width="1060" height="560" fill="#12151a"/>
+  <text x="34" y="42" class="h">工作区图标的数据流：从磁盘上的一个字段，到标签栏上的一张位图</text>
+
+  <rect x="34" y="72" width="300" height="112" class="box"/>
+  <text x="52" y="100" class="t">① Edge 浏览器界面</text>
+  <text x="52" y="126" class="m">标签栏 / 工作区切换器</text>
+  <text x="52" y="150" class="c">edge.spaceworks.proto.WorkspaceData</text>
+  <text x="52" y="172" class="m">（内存对象，由同步模型填充）</text>
+
+  <rect x="410" y="72" width="300" height="112" class="soft"/>
+  <text x="428" y="100" class="t">② Sync Data / LevelDB</text>
+  <text x="428" y="126" class="c">edge_workspace-dt-&lt;guid&gt;</text>
+  <text x="428" y="150" class="c">→ specifics.field4</text>
+  <text x="428" y="172" class="c">→ details.field9 = 图标</text>
+
+  <rect x="786" y="72" width="240" height="112" class="soft"/>
+  <text x="804" y="100" class="t">③ 渲染分支</text>
+  <text x="804" y="128" class="m">字段存在 → emoji 位图</text>
+  <text x="804" y="154" class="m">字段缺失 → 内置线框</text>
+  <text x="804" y="176" class="m">颜色另由 details.2 决定</text>
+
+  <path d="M334 128 H410" class="arrow"/>
+  <path d="M710 128 H786" class="arrow"/>
+  <text x="338" y="118" class="m">读取</text>
+  <text x="718" y="118" class="m">读取</text>
+
+  <rect x="34" y="246" width="992" height="120" class="soft"/>
+  <text x="52" y="274" class="t">④ 适配器写入（不改变任何已有文件，只追加一个新日志）</text>
+  <rect x="52" y="292" width="220" height="56" class="box"/>
+  <text x="70" y="316" class="c">WorkspaceRecord</text>
+  <text x="70" y="338" class="m">删除 details.9</text>
+
+  <rect x="318" y="292" width="240" height="56" class="box"/>
+  <text x="336" y="316" class="c">WriteBatch</text>
+  <text x="336" y="338" class="m">seq = max_seq + 1</text>
+
+  <rect x="604" y="292" width="200" height="56" class="box"/>
+  <text x="622" y="316" class="c">012168.log</text>
+  <text x="622" y="338" class="m">crc32c + 32KiB 分帧</text>
+
+  <rect x="850" y="292" width="156" height="56" class="box"/>
+  <text x="868" y="316" class="c">leveldb 回放</text>
+  <text x="868" y="338" class="m">覆盖旧值</text>
+
+  <path d="M272 320 H318" class="arrow"/>
+  <path d="M558 320 H604" class="arrow"/>
+  <path d="M804 320 H850" class="arrow"/>
+  <path d="M928 292 V206" class="arrow"/>
+  <text x="936" y="238" class="m">重启生效</text>
+
+  <rect x="34" y="410" width="480" height="118" class="soft"/>
+  <text x="52" y="438" class="t">⑤ 安全边界</text>
+  <text x="52" y="464" class="m">写前：整目录备份（LevelDB + Preferences）</text>
+  <text x="52" y="488" class="m">写入：只增一个 .log，不动 .ldb / MANIFEST / CURRENT</text>
+  <text x="52" y="512" class="m">回滚：删掉该文件，或用 restore 子命令</text>
+
+  <rect x="546" y="410" width="480" height="118" class="soft"/>
+  <text x="564" y="438" class="t">⑥ 同步语义（重要）</text>
+  <text x="564" y="464" class="m">metadata 里的服务器版本未变 → 视为「已是最新」</text>
+  <text x="564" y="488" class="m">→ 本次改动是本地覆盖，不会主动上传</text>
+  <text x="564" y="512" class="m">→ 服务器更新该实体时，emoji 会被重新下载回来</text>
+
+  <text x="34" y="552" class="m">图为实测结构；字段编号来自对 Edge 158.0.4370.45 的逐字节解码，而非微软公开文档。</text>
+</svg>

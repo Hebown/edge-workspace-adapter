@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="500" viewBox="0 0 1000 500">
+  <defs>
+    <style>
+      .t { fill:#e8ebf0; font:15px 'Microsoft YaHei',sans-serif; }
+      .m { fill:#a9b2c0; font:13px 'Microsoft YaHei',sans-serif; }
+      .c { fill:#7fb4ff; font:14px Consolas,monospace; }
+      .y { fill:#ffd479; font:bold 14px 'Microsoft YaHei',sans-serif; }
+      .line { stroke:#4a5260; stroke-width:1.5; fill:none; }
+      .h { fill:#fff; font:bold 20px 'Microsoft YaHei',sans-serif; }
+    </style>
+  </defs>
+  <rect width="1000" height="500" fill="#12151a"/>
+  <text x="30" y="40" class="h">树形展开：一个 key 下面到底装了什么</text>
+
+  <text x="40" y="88" class="c">Sync Data/LevelDB</text>
+  <path d="M60 96 V112 H130" class="line"/>
+  <text x="140" y="116" class="c">edge_workspace-dt-&lt;workspace-id&gt;</text>
+  <path d="M150 124 V140 H220" class="line"/>
+  <text x="230" y="144" class="c">value (protobuf)</text>
+
+  <path d="M240 152 V168 H290" class="line"/>
+  <text x="300" y="172" class="c">field2 = specifics</text>
+  <path d="M310 180 V196 H360" class="line"/>
+  <text x="370" y="200" class="c">field4 = WorkspaceDetails</text>
+
+  <path d="M380 208 V224 H430" class="line"/>
+  <text x="440" y="228" class="c">field1 = "&lt;name&gt;"</text>
+  <path d="M380 224 V244 H430" class="line"/>
+  <text x="440" y="248" class="c">field2 = 0x00000000（颜色）</text>
+  <path d="M380 244 V264 H430" class="line"/>
+  <text x="440" y="268" class="c">field3 = &lt;最近使用时间, µs&gt;</text>
+  <path d="M380 264 V284 H430" class="line"/>
+  <text x="440" y="288" class="c">field6 = 1（共享标记）</text>
+  <path d="M380 284 V304 H430" class="line"/>
+  <text x="440" y="308" class="y">field9 = "📁"  ← 只改这一处</text>
+
+  <rect x="40" y="340" width="920" height="132" fill="#1a1d23" stroke="#4a5260" rx="8"/>
+  <text x="60" y="368" class="t">数字从哪里来（可还原，不是魔法常量）</text>
+  <text x="60" y="394" class="m">&lt;最近使用时间&gt; 微秒 = (某个真实日期) − 1601-01-01，Windows 时间原点 × 10⁶</text>
+  <text x="60" y="418" class="m">0x00000000 = ARGB(0,0,0,0)：未设置颜色；0xFF8CABE4 = ARGB(255,140,171,228) 浅蓝</text>
+  <text x="60" y="442" class="m">101 → 95 字节：删除 4a 04 f0 9f 93 81（tag+长度+UTF-8 emoji = 6 字节）并重算长度前缀</text>
+  <text x="60" y="464" class="m">0xF0 0x9F 0x93 0x81 = Unicode U+1F4C1 的 UTF-8 四字节编码</text>
+</svg>
