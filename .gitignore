@@ -1,0 +1,17 @@
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Real profile data and backups must never enter this repository.
+backups/
+*.log
+*.ldb
+*.sst
+*.ico
+research/snapshots/
+_test-profile/
+figures/screen.png
+
+# Editor / OS noise
+.DS_Store
+Thumbs.db
